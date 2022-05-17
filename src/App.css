@@ -1,38 +1,212 @@
 .App {
+  font-family: sans-serif;
   text-align: center;
+  margin-top: 20px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+textarea {
+  width: 90%;
+  padding: 8px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+table {
+  margin: 20px auto 0;
+  width: 90%;
+  border-collapse: collapse;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
+table,
+td {
+  border: 1px solid #d3d3d3;
+}
+
+tr {
+  padding: 2px;
+}
+
+td {
+  padding: 2px;
+  white-space: pre-line;
+}
+
+.ignored {
+  background-color: #d3d3d3;
+  color: grey;
+}
+
+th.ignored > div:before {
+  content: "-";
+}
+.description{
+  display:flex;
   flex-direction: column;
   align-items: center;
+  width:90%;
+}
+.description > div{
+  display:flex;
+  width:fit-content;
+  flex-direction: row;
+  height:min-content;
+  margin-left:auto;
+  margin-right:auto;
+  align-items: center;
+
+}
+[type="animal"]{
+  display:flex;
+  width:100%;
+}
+.selection{
+  width:100%;
+  display:flex;
+  flex-direction:row;
+}
+.levels{
+  width:100%;
+  display:flex;
+  flex-direction: column;
+  margin:30px;
+}
+.level{
+  height:200px;
+  width:100%;
+  display:flex;
+  flex-direction:row;
+}
+.level_drop{
+  width:20%;
+  height:100%;
+}
+
+.level_label{
+  width:100%;
+  border-color: transparent transparent rgb(123, 123, 123) transparent ;
+  border-width:2px;
+  border-style: solid;
+  text-align: left;
+  color:rgb(63, 63, 63)
+}
+.level_items *{
+  display: inline-block;
+  float:left;
+}
+.level_items{
+  float:left;
+}
+
+.animal_box{
+  width:fit-content;
+  height:fit-content;
+  padding-left:10px;
+  padding-right:10px;
+  padding-bottom: 5px;
+  padding-top:5px;
+  margin :5px;
+  background-color:#248abd;
+  color:white;
+  font-weight:bold;
+  border-radius:20px;
+
+}
+.contain{
+  width:100%;
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+}
+.level_basket{
+  width:80%;
+  height:100%;
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content:center;
+}
+.level_basket_dragging{
+  width:80%;
+  height:100%;
+  background-color: #dbdbdb;
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content:center;
+}
+.Animal{
+  background: #248abd;
+  color:white;
+  border-radius:30px;
+  padding:15px;
+  margin:10px;
+  position:relative;
+}
+.delete_Animal{
+  position:absolute;
+  top:10px;
+  right:10px;
+  width:fit-content;
+  background-color: transparent;
+  border-color:transparent;
+  color:white;
+  font-weight:bold;
+  border-radius:6px;
+}
+.delete_Animal:active{
+  -webkit-transform-origin-x: 3px;
+  -webkit-transform-origin-y: 3px;
+  -ms-transform-origin-x: 3px;
+  -ms-transform-origin-y: 3px;
+  transform-origin: 3px 3px;
+  background-color:#185e81
+}
+
+
+.Name{
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+.data_container{
+  display:flex;
+  flex-direction: row;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  padding:auto;
+}
+.data{
+  padding-left:10px;
+  padding-right:10px;
+  font-size:15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.data_column{
+  display:flex;
+  flex-direction: column;
+}
+.data_title{
+  font-weight:bold;
+  border-style:solid;
+  border-width:1px;
+  border-color:transparent transparent white transparent;
+}
+.food{
+  color:rgb(255, 200, 200);
+  font-weight:700;
+  display:flex;
+  flex-direction:row;
+  justify-content: center;
+}
+.food *{
+  padding-top:5px;
+  padding-bottom:5px;
+  padding-left:10px;
+  padding-right:10px;
+  margin:5px;
+  margin-top:15px;
+  border-radius:10px;
+  width:fit-content;
+  height:fit-content;
+  background-color:#196185
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
