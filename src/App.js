@@ -40,15 +40,15 @@ class App extends Component {
     this.updateFoodChain = this.updateFoodChain.bind(this);
     this.calculate_results = this.calculate_results.bind(this);
     this.loop_calculate_results = this.loop_calculate_results.bind(this);
-    this.parse=this.parse.bind(this);
+    this.parse = this.parse.bind(this);
   }
   componentDidMount() {
     var rawStr = localStorage.getItem("rawStr");
-    this.parse(rawStr)
+    this.parse(rawStr);
   }
   handleChange = ({ target: { value } }) => {
-    this.parse(value)
-  }
+    this.parse(value);
+  };
   parse = (value) => {
     let data = parseClip(value);
     let header = data[0];
@@ -87,7 +87,6 @@ class App extends Component {
         );
       });
       animal.food_array = food_array;
-      
     });
 
     this.make_level(animals);
@@ -98,7 +97,6 @@ class App extends Component {
       animals: animals,
       classes: classes,
     });
-
   };
 
   make_level(animals) {
@@ -106,7 +104,6 @@ class App extends Component {
       var current_animal = animal;
       animal.level = this.recursive_traverse(animal);
     });
-
   }
   recursive_traverse(animal) {
     var depth = -1;
@@ -130,15 +127,15 @@ class App extends Component {
   calculate_results(foodChain) {
     this.initialize_result(foodChain);
     this.loop_calculate_results(foodChain);
-    this.setState({foodChain: foodChain});
+    this.setState({ foodChain: foodChain });
   }
   loop_calculate_results(oldFoodChain) {
-    var foodChain=[[],[],[],[]]
-    oldFoodChain.map((level,key) =>{
-      level.map(animal =>{
-        foodChain[key].push(animal)
-      })
-    })
+    var foodChain = [[], [], [], []];
+    oldFoodChain.map((level, key) => {
+      level.map((animal) => {
+        foodChain[key].push(animal);
+      });
+    });
     for (var level_index = 1; level_index < foodChain.length; level_index++) {
       var level = foodChain[level_index];
       var previous_level = foodChain[level_index - 1];
@@ -149,35 +146,40 @@ class App extends Component {
         console.log("animal", animal);
         var foodSource = animal.food_array;
         if (foodSource[0] != undefined) {
-          var edibles = foodSource.filter(myAnimal => previous_level.includes(myAnimal))
+          var edibles = foodSource.filter((myAnimal) =>
+            previous_level.includes(myAnimal)
+          );
           edibles.sort(this.compareProvided);
-          console.log("edibles",edibles)
-          for(var edible_index=0; edible_index<edibles.length;edible_index++){
-            var copy=[]
-            edibles.map((value)=>{
-              copy.push(Object.assign({},value))
-            })
-            console.log("deep copy",copy)
-            var edible=edibles[edible_index];
-            var sameProvided = edibles.filter((animal,index) =>{
-              if(index<edible_index) return false;
-              return animal.result_provided==edible.result_provided
-            })
-            console.log("sameProvided",sameProvided);
-            var num_same=sameProvided.length
-            edible_index=edible_index+sameProvided.length-1
-            if(animal.result_needed>=edible.result_provided*num_same){
+          console.log("edibles", edibles);
+          for (
+            var edible_index = 0;
+            edible_index < edibles.length;
+            edible_index++
+          ) {
+            var copy = [];
+            edibles.map((value) => {
+              copy.push(Object.assign({}, value));
+            });
+            console.log("deep copy", copy);
+            var edible = edibles[edible_index];
+            var sameProvided = edibles.filter((animal, index) => {
+              if (index < edible_index) return false;
+              return animal.result_provided == edible.result_provided;
+            });
+            console.log("sameProvided", sameProvided);
+            var num_same = sameProvided.length;
+            edible_index = edible_index + sameProvided.length - 1;
+            if (animal.result_needed >= edible.result_provided * num_same) {
               animal.result_needed =
                 animal.result_needed - edible.result_provided * num_same;
-              for(var i=0; i<sameProvided.length;i++){
-                sameProvided[i].result_provided=0
+              for (var i = 0; i < sameProvided.length; i++) {
+                sameProvided[i].result_provided = 0;
               }
-            }
-            else{
-              console.log("previous needed",animal.result_needed)
+            } else {
+              console.log("previous needed", animal.result_needed);
               console.log("animal.result_needed", animal.result_needed);
               for (var i = 0; i < sameProvided.length; i++) {
-                sameProvided[i].result_provided = 
+                sameProvided[i].result_provided =
                   sameProvided[i].result_provided -
                   animal.result_needed / num_same;
               }
@@ -187,7 +189,19 @@ class App extends Component {
         }
       }
     }
-    console.log(foodChain)
+    console.log(foodChain);
+  }
+  checkCorrectness(foodChain) {
+    var correct = true;
+    foodChain.map((level) => {
+      level.map((animal) => {
+        if ((animal.result_provided === 0) | (animal.result_needed > 0)) {
+          correct = false;
+          return;
+        }
+      });
+    });
+    return correct;
   }
   initialize_result(foodChain) {
     foodChain.map((level) => {
@@ -217,7 +231,7 @@ class App extends Component {
   }
 
   updateFoodChain(foodChain) {
-    this.setState({foodChain:foodChain})
+    this.setState({ foodChain: foodChain });
   }
   render() {
     return (
@@ -244,7 +258,7 @@ class App extends Component {
         />
         <div className="selection">
           <div className="levels">
-            {this.state.classes.reverse().map((animals, key) => {
+            {[...this.state.classes].reverse().map((animals, key) => {
               return (
                 <DndProvider backend={HTML5Backend}>
                   <Basket
