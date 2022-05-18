@@ -34,25 +34,22 @@ class App extends Component {
     this.state = {
       rawStr: "",
       animals: [],
-      foodChain: [[],[],[],[]],
+      foodChain: [[], [], [], []],
       classes: [],
     };
-    this.handleCallback = this.handleCallback.bind(this);
+    this.updateFoodChain = this.updateFoodChain.bind(this);
+    this.calculate_results = this.calculate_results.bind(this);
+    this.loop_calculate_results = this.loop_calculate_results.bind(this);
+    this.parse=this.parse.bind(this);
   }
   componentDidMount() {
     var rawStr = localStorage.getItem("rawStr");
-    var animals = JSON.parse(localStorage.getItem("animals"));
-    var classes = JSON.parse(localStorage.getItem("classes"));
-    console.log(rawStr, animals, classes);
-    if ((rawStr != null) & (animals != null) & (classes != null)) {
-      this.setState({
-        rawStr: rawStr,
-        animals: animals,
-        classes: classes,
-      });
-    }
+    this.parse(rawStr)
   }
   handleChange = ({ target: { value } }) => {
+    this.parse(value)
+  }
+  parse = (value) => {
     let data = parseClip(value);
     let header = data[0];
     let newData = [];
@@ -90,17 +87,18 @@ class App extends Component {
         );
       });
       animal.food_array = food_array;
+      
     });
+
     this.make_level(animals);
     var classes = this.classify(animals);
     localStorage.setItem("rawStr", value);
-    localStorage.setItem("animals", JSON.stringify(animals));
-    localStorage.setItem("classes", JSON.stringify(classes));
     this.setState({
       rawStr: value,
       animals: animals,
       classes: classes,
     });
+
   };
 
   make_level(animals) {
@@ -108,6 +106,7 @@ class App extends Component {
       var current_animal = animal;
       animal.level = this.recursive_traverse(animal);
     });
+
   }
   recursive_traverse(animal) {
     var depth = -1;
@@ -120,15 +119,7 @@ class App extends Component {
     }
     return depth + 1;
   }
-  handleCallback(item, level, key) {
-    var data = this.state.foodChain;
-    data[level][key] = item;
-    this.setState({ foodChain: data });
-    var foodChain = this.state.foodChain;
-    for (var i = foodChain.length - 1; i >= 0; i++) {
-      for (var j = 0; j < foodChain[i].length; j++) {}
-    }
-  }
+
   classify(animals) {
     var classes = [[], [], [], []];
     for (var index in animals) {
@@ -136,7 +127,98 @@ class App extends Component {
     }
     return classes;
   }
+  calculate_results(foodChain) {
+    this.initialize_result(foodChain);
+    this.loop_calculate_results(foodChain);
+    this.setState({foodChain: foodChain});
+  }
+  loop_calculate_results(oldFoodChain) {
+    var foodChain=[[],[],[],[]]
+    oldFoodChain.map((level,key) =>{
+      level.map(animal =>{
+        foodChain[key].push(animal)
+      })
+    })
+    for (var level_index = 1; level_index < foodChain.length; level_index++) {
+      var level = foodChain[level_index];
+      var previous_level = foodChain[level_index - 1];
+      level.sort(this.compareProvided);
+      previous_level.sort(this.compareProvided);
+      for (var animal_index = 0; animal_index < level.length; animal_index++) {
+        var animal = level[animal_index];
+        console.log("animal", animal);
+        var foodSource = animal.food_array;
+        if (foodSource[0] != undefined) {
+          var edibles = foodSource.filter(myAnimal => previous_level.includes(myAnimal))
+          edibles.sort(this.compareProvided);
+          console.log("edibles",edibles)
+          for(var edible_index=0; edible_index<edibles.length;edible_index++){
+            var copy=[]
+            edibles.map((value)=>{
+              copy.push(Object.assign({},value))
+            })
+            console.log("deep copy",copy)
+            var edible=edibles[edible_index];
+            var sameProvided = edibles.filter((animal,index) =>{
+              if(index<edible_index) return false;
+              return animal.result_provided==edible.result_provided
+            })
+            console.log("sameProvided",sameProvided);
+            var num_same=sameProvided.length
+            edible_index=edible_index+sameProvided.length-1
+            if(animal.result_needed>=edible.result_provided*num_same){
+              animal.result_needed =
+                animal.result_needed - edible.result_provided * num_same;
+              for(var i=0; i<sameProvided.length;i++){
+                sameProvided[i].result_provided=0
+              }
+            }
+            else{
+              console.log("previous needed",animal.result_needed)
+              console.log("animal.result_needed", animal.result_needed);
+              for (var i = 0; i < sameProvided.length; i++) {
+                sameProvided[i].result_provided = 
+                  sameProvided[i].result_provided -
+                  animal.result_needed / num_same;
+              }
+              animal.result_needed = 0;
+            }
+          }
+        }
+      }
+    }
+    console.log(foodChain)
+  }
+  initialize_result(foodChain) {
+    foodChain.map((level) => {
+      level.map((animal) => {
+        animal.result_needed = animal.needed;
+        animal.result_provided = animal.provided;
+      });
+    });
+  }
+  compareNeeded(a, b) {
+    if (a.result_needed < b.result_needed) {
+      return 1;
+    }
+    if (a.result_needed > b.result_needed) {
+      return -1;
+    }
+    return 0;
+  }
+  compareProvided(a, b) {
+    if (a.result_provided < b.result_provided) {
+      return 1;
+    }
+    if (a.result_provided > b.result_provided) {
+      return -1;
+    }
+    return 0;
+  }
 
+  updateFoodChain(foodChain) {
+    this.setState({foodChain:foodChain})
+  }
   render() {
     return (
       <div className="App">
@@ -168,9 +250,9 @@ class App extends Component {
                   <Basket
                     animals={animals}
                     level={this.state.classes.length - key - 1}
-                    foodChainBasket={
-                      this.state.foodChain[this.state.classes.length - key - 1]
-                    }
+                    foodChain={this.state.foodChain}
+                    calculate_results={this.calculate_results}
+                    updateFoodChain={this.updateFoodChain}
                   ></Basket>
                 </DndProvider>
               );

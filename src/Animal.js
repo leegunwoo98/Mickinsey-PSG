@@ -16,28 +16,30 @@ class Animal extends Component {
         <div className="Name">{this.props.animal.name}</div>
         <div className="data_container">
           <div className="data">
+
+            <div className="data_column">
+              <div className="data_title">Provided</div>
+              <div className="data_value">{this.props.animal.provided}</div>
+            </div>            
             <div className="data_column">
               <div className="data_title">Needed</div>
               <div className="data_value">{this.props.animal.needed}</div>
             </div>
-            <div className="data_column">
-              <div className="data_title">Provided</div>
-              <div className="data_value">{this.props.animal.provided}</div>
-            </div>
           </div>
           <div className="data">
-            <div className="data_column">
-              <div className="data_title">Result Needed</div>
-              <div className="data_value">
-                {this.props.animal.result_needed}
-              </div>
-            </div>
             <div className="data_column">
               <div className="data_title">Result Provided</div>
               <div className="data_value">
                 {this.props.animal.result_provided}
               </div>
             </div>
+            <div className="data_column">
+              <div className="data_title">Result Needed</div>
+              <div className="data_value">
+                {this.props.animal.result_needed}
+              </div>
+            </div>
+            
           </div>
         </div>
         <div className="food">
