@@ -11,35 +11,49 @@ class Animal extends Component {
   render() {
     return (
       <div className="Animal">
-        <button className="delete_Animal" onClick={() => this.props.delete_item(this.props.animal)}>X
+        <button
+          className="delete_Animal"
+          onClick={() => this.props.delete_item(this.props.animal)}
+        >
+          X
         </button>
         <div className="Name">{this.props.animal.name}</div>
         <div className="data_container">
           <div className="data">
-
             <div className="data_column">
               <div className="data_title">Provided</div>
               <div className="data_value">{this.props.animal.provided}</div>
-            </div>            
+            </div>
             <div className="data_column">
               <div className="data_title">Needed</div>
               <div className="data_value">{this.props.animal.needed}</div>
             </div>
           </div>
           <div className="data">
-            <div className="data_column">
+            <div
+              className={
+                this.props.animal.result_provided > 0
+                  ? "data_column"
+                  : "data_column_error"
+              }
+            >
               <div className="data_title">Result Provided</div>
               <div className="data_value">
                 {this.props.animal.result_provided}
               </div>
             </div>
-            <div className="data_column">
+            <div
+              className={
+                this.props.animal.result_needed === 0
+                  ? "data_column"
+                  : "data_column_error"
+              }
+            >
               <div className="data_title">Result Needed</div>
               <div className="data_value">
                 {this.props.animal.result_needed}
               </div>
             </div>
-            
           </div>
         </div>
         <div className="food">

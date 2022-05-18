@@ -183,6 +183,13 @@ th.ignored > div:before {
 .data_column{
   display:flex;
   flex-direction: column;
+  border-radius:10px;
+}
+.data_column_error{
+  display:flex;
+  flex-direction: column;
+  background-color:rgb(197, 0, 0);
+  border-radius:10px;
 }
 .data_title{
   font-weight:bold;
